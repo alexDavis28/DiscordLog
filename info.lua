@@ -30,7 +30,6 @@ g_PluginInfo =
         }
         }
     },
-	ConsoleCommands = {},
     Permissions =
     {
         ["DL.log"] =
