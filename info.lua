@@ -11,8 +11,7 @@ g_PluginInfo =
             Contents = "On first run DiscordLog.ini will be created. Add a webhook url in that and reload plugins."
         }
     },
-	Commands = {}
-    },
+	Commands = {},
     Permissions =
     {
         ["DL.log"] =
