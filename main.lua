@@ -72,7 +72,7 @@ function send_webhook(text, name)
 
 	-- Format the payload
 	local avatar = [["]] .. g_Config.PFP .. [["]]
-	local payload = [[ {"username":"]] .. name .. [[","avatar_url":]] .. avatar .. [[,"content":"]] .. text .. [["} ]]
+	local payload = [[ {"username":"]] .. name .. [[","avatar_url":]] .. avatar .. [[,"content":"]] .. text .. [[", "allowed_mentions": {"parse": []} } ]]
 	-- Get the webhook url
 	local url  = g_Config.URL
 
