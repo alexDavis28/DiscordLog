@@ -11,24 +11,7 @@ g_PluginInfo =
             Contents = "On first run DiscordLog.ini will be created. Add a webhook url in that and reload plugins."
         }
     },
-	Commands = {
-        ["/log"] =
-        {
-        HelpString = "Logs the given text to the webhook, with an optional username.",
-        Permission = "DL.log",
-        Handler = Log,
-        ParameterCombinations =
-        {
-            {
-                Params = "text",
-                Help = "Logs the given text",
-            },
-            {
-                Params = "text username",
-                Help = "Logs the given text with the given",
-            }
-        }
-        }
+	Commands = {}
     },
     Permissions =
     {
@@ -38,5 +21,4 @@ g_PluginInfo =
             RecommendedGroups = "admins",
         }
     }
-	Categories = {},
 }
