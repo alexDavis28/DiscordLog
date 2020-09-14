@@ -24,9 +24,9 @@ function Initialize(Plugin)
 	-- Add the test command
 	cPluginManager.BindCommand("/log", "DL.log", Log, " ~ Logs a message");
 
-	-- Use the InfoReg shared library to process the Info.lua file:
-	dofile(cPluginManager:GetPluginsPath() .. "/InfoReg.lua")
-	RegisterPluginInfoCommands()
+	-- -- Use the InfoReg shared library to process the Info.lua file:
+	-- dofile(cPluginManager:GetPluginsPath() .. "/InfoReg.lua")
+	-- RegisterPluginInfoCommands()
 
 	-- Log the plugin going online
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
