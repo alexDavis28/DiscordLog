@@ -1,19 +1,13 @@
-PLUGIN = nil
-
 function Initialize(Plugin)
-	Plugin:SetName("DiscordLog")
-	Plugin:SetVersion(0.1)
+	Plugin:SetName("DerpyPlugin")
+	Plugin:SetVersion(1)
 
-	-- Hooks
-
-	PLUGIN = Plugin -- NOTE: only needed if you want OnDisable() to use GetName() or something like that
-
-	-- Command Bindings
+	cPluginManager.AddHook(cPluginManager.HOOK_PLAYER_MOVING, OnPlayerMoving)
 
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
 	return true
 end
 
-function OnDisable()
-	LOG(PLUGIN:GetName() .. " is shutting down...")
+function OnPlayerMoving(Player) -- See API docs for parameters of all hooks
+	return true -- Prohibit player movement, see docs for whether a hook is cancellable
 end
