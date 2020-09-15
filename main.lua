@@ -8,6 +8,11 @@ PluginPrefix = PluginName .. ": "
 -- initialize global tables
 g_Config = {}
 
+
+-- SETUP
+
+
+
 function Initialize(Plugin)
 	-- Start the plugin
 	Plugin:SetName("DiscordLog")
@@ -28,6 +33,11 @@ function Initialize(Plugin)
 	-- dofile(cPluginManager:GetPluginsPath() .. "/InfoReg.lua")
 	-- RegisterPluginInfoCommands()
 
+	-- Add the hook handlers
+	-- if (g_Config.log_chat) then
+	-- 	cPluginManager:AddHook(cPluginManager.HOOK_CHAT, MyOnChat);
+	-- end
+
 	-- Log the plugin going online
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
 	return true
@@ -40,39 +50,63 @@ function InitializeConfig()
 
     local g_ini = cIniFile()
     iniFile = "DiscordLog.ini"
-    key = "Webhook"
     g_ini:ReadFile(iniFile);
     if not cFile:IsFile(iniFile) then
         -- webhook settings
-        g_Config.URL  = g_ini:GetValueSet(key, "URL", "");
-        g_Config.PFP   = g_ini:GetValueSet(key, "PFP", "https://newsletter.cuberite.org/assets/cuberite.png");
+        g_Config.URL = g_ini:GetValueSet("Webhook", "URL", "");
+		g_Config.PFP = g_ini:GetValueSet("Webhook", "PFP", "https://newsletter.cuberite.org/assets/cuberite.png");
+		g_Config.log_chat = g_ini:GetValueSetB("Log", "Chat", true)
 
         g_ini:WriteFile(iniFile);
 	else
 		g_Config.URL = g_ini:GetValue("Webhook","URL", "")
 		g_Config.PFP = g_ini:GetValue("Webhook", "PFP", "https://newsletter.cuberite.org/assets/cuberite.png")
+		g_Config.log_chat = g_ini:GetValueB("Log", "Chat", true)
+
     end
 
 end
 
+
+-- HOOKS
+
+
+-- function MyOnChat(Player, Message)
+
+
+
+-- COMMANDS
+
+
 function Log(Split, Player)
 	if (#Split < 2) then
 		-- Confirm there is at least one argument
-		Player:SendMessage("Usage: /log [text]")
+		Player:SendMessageInfo("Usage: /log [text]")
 		return true
 	end
 
-	send_webhook(Split[2], Split[3])
+	local text_table = {}
+
+	for i = 2, #Split do
+		table.insert(text_table, Split[i])
+	end
+
+	local log_text = table.concat(text_table, " ")
+
+	local payload = SimplePayload(log_text, Player:GetName())
+	SendWebhook(payload)
+
+	Player:SendMessageSuccess("Message sent!")
+
 	return true
 end
 
-function send_webhook(text, name)
-	-- Defualt name
-	name = name or "MINECRAFT SERVER"
 
-	-- Format the payload
-	local avatar = [["]] .. g_Config.PFP .. [["]]
-	local payload = [[ {"username":"]] .. name .. [[","avatar_url":]] .. avatar .. [[,"content":"]] .. text .. [[", "allowed_mentions": {"parse": []} } ]]
+-- FUNCTIONS
+
+
+function SendWebhook(payload)
+	-- Defualt name
 	-- Get the webhook url
 	local url  = g_Config.URL
 
@@ -83,7 +117,7 @@ function send_webhook(text, name)
 			-- Response received correctly, a_Body contains the entire response body,
 			-- a_Data is a dictionary-table of the response's HTTP headers
 			if (a_Body==nil or a_Body=="") then
-				LOG("Webhook request successful, with message: '" ..text.."'")
+				LOG("Webhook request successful, with payload: '" ..payload.."'")
 			else
 				LOG("Response from webhook request: " .. (a_Body) .. "")
 			end
@@ -94,4 +128,11 @@ function send_webhook(text, name)
 
 	-- Make the request
 	cUrlClient:Post(url, callback, headers, payload)
+end
+
+function SimplePayload(content, username)
+	local username = username or "MINECRAFT SERVER"
+	local avatar = [["]] .. g_Config.PFP .. [["]]
+	local payload = [[ {"username":"]] .. username .. [[","avatar_url":]] .. avatar .. [[,"content":"]] .. content .. [[", "allowed_mentions": {"parse": []} } ]]
+	return payload
 end
