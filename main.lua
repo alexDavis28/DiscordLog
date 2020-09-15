@@ -71,8 +71,10 @@ end
 -- HOOKS
 
 
--- function MyOnChat(Player, Message)
-
+function MyOnChat(Player, Message)
+	local payload = ConstructEmbedPayload("Chat Log", Message, Player:GetName())
+	SendWebhook(payload)
+end
 
 
 -- COMMANDS
@@ -105,10 +107,6 @@ end
 
 
 -- FUNCTIONS
-function MyOnChat(Player, Message)
-	local payload = ConstructEmbedPayload("Chat Log", Message, Player:GetName())
-	SendWebhook(payload)
-end
 
 
 function SendWebhook(payload)
