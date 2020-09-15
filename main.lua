@@ -121,9 +121,14 @@ end
 
 
 function MyOnExecuteCommand(Player, CommandSplit, EntireCommand)
-	local payload = ConstructEmbedPayload("Command executed", EntireCommand, Player:GetName(), 16776960)
-	SendWebhook(payload)
-
+	if (Player==nil) then
+		local payload = ConstructEmbedPayload("Command executed", EntireCommand, "Console", 16776960)
+		SendWebhook(payload)
+	else
+		local payload = ConstructEmbedPayload("Command executed", EntireCommand, Player:GetName(), 16776960)
+		SendWebhook(payload)
+	end
+	return false
 end
 
 
