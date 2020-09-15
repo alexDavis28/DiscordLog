@@ -34,6 +34,10 @@ function Initialize(Plugin)
 	-- RegisterPluginInfoCommands()
 
 	-- Add the hook handlers
+	if (g_Config.log_world_start) then
+		cPluginManager:AddHook(cPluginManager.HOOK_WORLD_STARTED, MyOnWorldStarted);
+	end
+
 	if (g_Config.log_chat) then
 		cPluginManager:AddHook(cPluginManager.HOOK_CHAT, MyOnChat);
 	end
@@ -75,6 +79,7 @@ function InitializeConfig()
         -- webhook settings
         g_Config.URL = g_ini:GetValueSet("Webhook", "URL", "");
 		g_Config.PFP = g_ini:GetValueSet("Webhook", "PFP", "https://newsletter.cuberite.org/assets/cuberite.png");
+		g_Config.log_world_start = g_ini:GetValueSetB("Log", "WorldStart", true)
 		g_Config.log_chat = g_ini:GetValueSetB("Log", "Chat", true)
 		g_Config.log_join = g_ini:GetValueSetB("Log", "PlayerJoin", true)
 		g_Config.log_disconnect = g_ini:GetValueSetB("Log", "PlayerDisconnect", true)
@@ -87,6 +92,7 @@ function InitializeConfig()
 	else
 		g_Config.URL = g_ini:GetValue("Webhook","URL", "")
 		g_Config.PFP = g_ini:GetValue("Webhook", "PFP", "https://newsletter.cuberite.org/assets/cuberite.png")
+		g_Config.log_world_start = g_ini:GetValueB("Log", "WorldStart", true)
 		g_Config.log_chat = g_ini:GetValueB("Log", "Chat", true)
 		g_Config.log_join = g_ini:GetValueB("Log", "PlayerJoin", true)
 		g_Config.log_disconnect = g_ini:GetValueB("Log", "PlayerDisconnect", true)
@@ -100,6 +106,12 @@ end
 
 
 -- HOOKS HANDLING
+
+
+function MyOnWorldStarted(World)
+	local payload = ConstructEmbedPayload("World loaded", World:GetName(), "SERVER", 65280)
+	SendWebhook(payload)
+end
 
 
 function MyOnChat(Player, Message)
