@@ -34,9 +34,9 @@ function Initialize(Plugin)
 	-- RegisterPluginInfoCommands()
 
 	-- Add the hook handlers
-	-- if (g_Config.log_chat) then
-	-- 	cPluginManager:AddHook(cPluginManager.HOOK_CHAT, MyOnChat);
-	-- end
+	if (g_Config.log_chat) then
+		cPluginManager:AddHook(cPluginManager.HOOK_CHAT, MyOnChat);
+	end
 
 	-- Log the plugin going online
 	LOG("Initialised " .. Plugin:GetName() .. " v." .. Plugin:GetVersion())
@@ -103,6 +103,10 @@ end
 
 
 -- FUNCTIONS
+function MyOnChat(Player, Message)
+	local payload = SimplePayload(Message, Player:GetName())
+	SendWebhook(payload)
+end
 
 
 function SendWebhook(payload)
