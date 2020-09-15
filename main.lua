@@ -85,6 +85,7 @@ function Log(Split, Player)
 		return true
 	end
 
+
 	local text_table = {}
 
 	for i = 2, #Split do
@@ -93,9 +94,10 @@ function Log(Split, Player)
 
 	local log_text = table.concat(text_table, " ")
 
-	local payload = SimplePayload(log_text, Player:GetName())
+	-- local payload = SimplePayload(log_text, Player:GetName())
+	-- SendWebhook(payload)
+	local payload = ConstructEmbedPayload("Log", log_text, Player:GetName())
 	SendWebhook(payload)
-
 	Player:SendMessageSuccess("Message sent!")
 
 	return true
@@ -104,7 +106,7 @@ end
 
 -- FUNCTIONS
 function MyOnChat(Player, Message)
-	local payload = SimplePayload(Message, Player:GetName())
+	local payload = ConstructEmbedPayload("Chat Log", Message, Player:GetName())
 	SendWebhook(payload)
 end
 
@@ -138,5 +140,17 @@ function SimplePayload(content, username)
 	local username = username or "MINECRAFT SERVER"
 	local avatar = [["]] .. g_Config.PFP .. [["]]
 	local payload = [[ {"username":"]] .. username .. [[","avatar_url":]] .. avatar .. [[,"content":"]] .. content .. [[", "allowed_mentions": {"parse": []} } ]]
+	return payload
+end
+
+function ConstructEmbedPayload(title, description, author, color)
+	author = author or "SERVER"
+	color = color or nil
+	local embed_footer = [[{"text":"]] .. author .. [["}]]
+	local embed = [[{"title":"]] .. title ..[[", "description":"]] .. description .. [[", "footer":]] .. embed_footer ..[[}]]
+
+	local username = "MINECRAFT SERVER"
+	local avatar = [["]] .. g_Config.PFP .. [["]]
+	local payload = '{"username":"' .. username .. '","avatar_url":' .. avatar .. ',"embeds":[' .. embed .. '], "allowed_mentions": {"parse": []} }'
 	return payload
 end
