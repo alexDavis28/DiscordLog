@@ -1,3 +1,0 @@
-make mentions a setting
-get info working
-error handling
